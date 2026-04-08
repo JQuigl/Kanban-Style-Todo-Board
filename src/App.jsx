@@ -49,30 +49,27 @@ export default function KanbanBoard() {
   };
 
   const renderColumn = (title, key) => (
-    <div
-      className="flex-1 bg-gray-100 rounded-2xl p-4 min-h-[400px]"
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={() => onDrop(key)}
-    >
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
-      <div className="space-y-3">
-        {columns[key].map((task) => (
-          <motion.div
-            key={task.id}
-            draggable
-            onDragStart={() => onDragStart(task, key)}
-            whileHover={{ scale: 1.03 }}
-          >
-            <Card className="cursor-grab active:cursor-grabbing shadow-md">
-              <CardContent className="p-3 text-sm">
-                {task.text}
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+  <div
+    className="flex-1 bg-gray-100 rounded-2xl p-4 min-h-[400px]"
+    onDragOver={(e) => e.preventDefault()}
+    onDrop={() => onDrop(key)}
+  >
+    <h2 className="text-xl font-semibold mb-4">{title}</h2>
+
+    <div className="space-y-3">
+      {(columns[key] || []).map((task) => (
+        <div
+          key={task.id}
+          draggable
+          onDragStart={() => onDragStart(task, key)}
+          className="bg-white rounded-xl shadow p-3 cursor-grab"
+        >
+          {task.text}
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -90,6 +87,7 @@ export default function KanbanBoard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {renderColumn("To Do", "todo")}
         {renderColumn("In Progress", "inProgress")}
+        {renderColumn("In Review", "inReview")}
         {renderColumn("Done", "done")}
       </div>
     </div>
