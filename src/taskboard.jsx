@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { supabase } from "./lib/client.ts";
-
+import { CircleAlert, TimerIcon, Check } from "lucide-react";
 const initialData = {
   todo: [],
   inProgress: [],
@@ -268,6 +268,26 @@ export default function KanbanBoard() {
     return new Date(task.due_date) < new Date();
   }).length;
 
+  // URGENCY TRACKER \\
+  const getUrgency = (task) => {
+    const { due_date: dueDate } = task.due_date ? task : { due_date: null };
+
+    if (!dueDate) return "none";
+
+    if(task.status === "done") return "normal";
+
+    const today = new Date();
+    const due = new Date(dueDate);
+
+    today.setHours(0, 0, 0, 0);
+    due.setHours(0, 0, 0, 0);
+
+    const diffDays = (due - today) / (1000 * 60 * 60 * 24);
+
+    if (diffDays < 0) return "overdue";
+    if (diffDays <= 2) return "dueSoon";
+    return "normal";
+  };
 
   const renderColumn = (title, key) => (
   <div
@@ -287,8 +307,31 @@ export default function KanbanBoard() {
   priorityBorder[task.priority]} ${
     columnColors[key]}`}
         >
-          <div className="font-semibold text-sm">
-            {task.title}
+          <div className="flex items-center justify-between">
+            <div className="font-semibold text-sm">
+              {task.title}
+            </div>
+
+            {/* URGENCY ICON */}
+            <div className="text-sm">
+              {getUrgency(task) === "overdue" && (
+                <span title="Overdue">
+                  <CircleAlert />
+                </span>
+              )}
+
+              {getUrgency(task) === "dueSoon" && (
+                <span title="Due soon">
+                  <TimerIcon />
+                </span>
+              )}
+
+              {getUrgency(task) === "normal" && task.due_date && (
+                <span title="On track">
+                  <Check />
+                </span>
+              )}
+            </div>
           </div>
 
           {task.description && (
