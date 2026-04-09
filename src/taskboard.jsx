@@ -271,6 +271,7 @@ export default function KanbanBoard() {
 
   const overdueTasks = allTasks.filter((task) => {
     if (!task.due_date) return false;
+    if(task.status === "done") return false;
     return new Date(task.due_date) < new Date();
   }).length;
 
