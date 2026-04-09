@@ -248,9 +248,12 @@ export default function KanbanBoard() {
       return;
     }
 
-    // optional: redirect to login page
-    window.location.href = "/login";
+    window.location.href = "/";
   };
+
+  // STAT TRACKING \\
+  
+
 
   const renderColumn = (title, key) => (
   <div
