@@ -40,7 +40,8 @@ export default function KanbanBoard() {
   });
   const [draggedTask, setDraggedTask] = useState(null);
   const [user, setUser] = useState(null);
-  
+  const [inputError, setError] = useState("");
+
   const fetchTasks = async () => {
     const { data, error } = await supabase.from("Tasks").select("*");
     
@@ -162,7 +163,12 @@ export default function KanbanBoard() {
   
   const addTask = async () => { 
 
-    if (!newTask.title.trim()) return;
+    if (!newTask.title.trim()) {
+      setError("Task title is required");
+      return;
+    }
+    setError(""); // clear previous error
+
     if (!user) return;
 
     const task = {
@@ -361,7 +367,7 @@ export default function KanbanBoard() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">Task Board</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">To-Do Task Board</h1>
       
       {user?.is_anonymous ? (
         <button
@@ -380,6 +386,13 @@ export default function KanbanBoard() {
       )}
 
       <div className="grid gap-2 mb-6">
+
+        {inputError && (
+          <div className="mb-3 p-2 bg-red-100 text-red-600 rounded">
+            {inputError}
+          </div>
+        )}
+
         <input
           name="title"
           value={newTask.title}
