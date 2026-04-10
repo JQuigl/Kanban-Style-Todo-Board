@@ -104,6 +104,11 @@ export default function KanbanBoard() {
           }));
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "Tasks" },
+        () => fetchTasks()
+      )
 
       // UPDATE (drag & drop changes status)
       .on(
